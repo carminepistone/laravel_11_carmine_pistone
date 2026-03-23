@@ -35,7 +35,14 @@ public function contactUsForm(Request $request){
     }
     return redirect(route('homepage'))->with('emailSent', 'Hai correttamente inviato il tuo messaggio!' );
     
+    }
+
+
+public function profile(){
+    
+    return view('profile');
 }
+
 
 
 }

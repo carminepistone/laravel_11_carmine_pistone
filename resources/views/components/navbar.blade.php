@@ -29,6 +29,9 @@
                         Ciao, {{ Auth::user()->name }}
                     </button>
                     <ul class="dropdown-menu">
+                        <li>
+                            <a href="{{ route('user.profile') }}">Profilo Personale</a>
+                        </li>
                         <li><form action="{{ route('logout') }}" method="POST">@csrf<button type="submit" class="dropdown-item">Logout</button></form></li>
 
                     </ul>

@@ -9,11 +9,17 @@
 
         <div class="card-body">
             <h5 class="card-title">{{ $menu->nome }}</h5>
+
             <h6 class="text-muted">{{ $menu->categoria }}</h6>
             <p class="card-text">{{ $menu->ingredienti }}</p>
+            <p class="card-text">Creato dall'utente {{ $menu->user->name}}</p>
             <h6 class="fw-bold">€ {{ number_format($menu->prezzo, 2) }}</h6>
             <a href="{{ route('menu.show', $menu) }}" class="btn custombtn">Leggi di più</a>
-            <a href="{{ route('menu.edit', $menu) }}" class="btn custombtn">Modifica</a>
+            @auth
+                @if ($menu->user_id == Auth::id())
+                    <a href="{{ route('menu.edit', $menu) }}" class="btn custombtn">Modifica</a>
+                 @endif
+            @endauth
         </div>
     </div>
 </div>

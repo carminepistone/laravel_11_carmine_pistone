@@ -95,3 +95,9 @@ body {
   color: white;
  
 }
+
+.dashboard{
+  background-color: white;
+  color:#0F3961 ;
+  border-radius: 8px;
+}

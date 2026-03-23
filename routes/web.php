@@ -14,3 +14,6 @@ Route::get('/menu/{menu}', [MenuController::class, 'show'])->name('menu.show');
 Route::get('/menu/{menu}/edit', [MenuController::class, 'edit'])->name('menu.edit')->middleware('auth');
 Route::put('/menu/{menu}', [MenuController::class, 'update'])->name('menu.update')->middleware('auth');
 Route::delete('/menu/{menu}', [MenuController::class, 'destroy'])->name('menu.destroy')->middleware('auth');
+
+
+Route::get('/user/profile', [PublicController::class,'profile'])->name('user.profile');

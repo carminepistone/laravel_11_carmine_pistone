@@ -1,16 +1,14 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use App\Models\Menu;
 use Illuminate\Http\Request;
 use App\Http\Requests\MenuRequest;
 use App\Http\Requests\MenuEditRequest;
-
+use Illuminate\Support\Facades\Auth;
 
 class MenuController extends Controller
 {
-
     public function index()
     {
         $vociMenu = Menu::all();
@@ -24,18 +22,17 @@ class MenuController extends Controller
 
     public function store(MenuRequest $request)
     {
-       $menu = Menu::create([
-        'nome' => $request->nome,
-        'categoria' => $request->categoria,
-        'ingredienti' => $request->ingredienti,
-        'prezzo' => $request->prezzo,
-        'img' => $request->file('img')->store('images','public'),
-       ]);
-       
-       return redirect()->route('homepage')->with('successMessage','Hai correttamente inserito la ricetta!');
+        Menu::create([
+            'nome'        => $request->nome,
+            'categoria'   => $request->categoria,
+            'ingredienti' => $request->ingredienti,
+            'prezzo'      => $request->prezzo,
+            'img'         => $request->file('img')->store('images', 'public'),
+            'user_id'     => Auth::user()->id,
+        ]);
 
+        return redirect()->route('homepage')->with('successMessage', 'Hai correttamente inserito la ricetta!');
     }
-
 
     public function show(Menu $menu)
     {
@@ -44,29 +41,46 @@ class MenuController extends Controller
 
     public function edit(Menu $menu)
     {
-        
-        return view('menu.edit', compact('menu'));
+        if ($menu->user_id == Auth::user()->id) {
+            return view('menu.edit', compact('menu'));
+        }else{
+
+        return redirect()->route('homepage')->with('error', 'Non sei autorizzato!');
+        }
     }
 
     public function update(MenuEditRequest $request, Menu $menu)
     {
-
-
-        $menu->update($request->all());
-
-        if($request->img){
-            $request->validate(['img' => 'image']);
+        if ($menu->user_id == Auth::user()->id) {
             $menu->update([
-                $menu->img = $request->file('img')->store('images','public')
+                'nome'        => $request->nome,
+                'categoria'   => $request->categoria,
+                'ingredienti' => $request->ingredienti,
+                'prezzo'      => $request->prezzo,
             ]);
-        }
 
-        return redirect()->route('menu.index')->with('success', 'Piatto aggiornato!');
+            if ($request->hasFile('img')) {
+                $menu->update([
+                    'img' => $request->file('img')->store('images', 'public'),
+                ]);
+            }
+
+            return redirect()->route('menu.index')->with('success', 'Piatto aggiornato!');
+        }else{
+
+        return redirect()->route('homepage')->with('error', 'Non sei autorizzato!');
+        }
     }
 
     public function destroy(Menu $menu)
     {
+
+
+        if ($menu->user_id == Auth::user()->id) {
         $menu->delete();
         return redirect()->route('menu.index')->with('success', 'Piatto eliminato!');
+        }else{
+            return redirect()->route('homepage')->with('error', 'Non sei autorizzato!');
+        }
     }
 }
